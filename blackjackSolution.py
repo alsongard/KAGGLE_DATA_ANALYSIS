@@ -1,4 +1,4 @@
-def hand_total(hand):
+def hand_total(hand): 
     """Helper function to calculate the total points of a blackjack hand.
     """
     total = 0
