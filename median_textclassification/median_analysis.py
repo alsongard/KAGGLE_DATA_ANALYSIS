@@ -1,7 +1,5 @@
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
+import matplotlib.pyplot as plt
 
 column_names = ["id", "TITLE", "URL", "PUBLISHER", "CATEGORY", "STORY", "HOSTNAME", "TIMESTAMP"]
 data_df = pd.read_csv("./data/newsCorpora.csv", header=None, delimiter="\t", index_col=False, names=column_names)
@@ -14,8 +12,6 @@ data_df = data_df.dropna(axis=0)
 print(data_df.isna().sum()) # got none
 
 print(data_df)
-data_df = data_df.drop(columns="id")
-
 
 # get info on columns
 print(data_df.info())
@@ -56,31 +52,16 @@ index_values = {
     "m": "Medical"
 }
 category_counts.index = category_counts.index.map(index_values)
-print(f"The shape of data_df is {data_df.shape}")
+# explodes = (0.02, 0.02, 0.02, 0.02)
+# print(category_counts)
+# category_counts.plot(kind="pie", autopct="%1.1f%%", explode=explodes, startangle=90)
+# plt.title("Categories")
+# plt.show()
+legend_titles = category_counts.index
+plt.figure(figsize=(10,6))
+# figsize=(width, height)
+bar_labels = ['red', 'blue', 'black', 'orange']
+category_counts.plot(kind='barh', color=bar_labels, width=0.4)
+plt.show()
 
 
-# MODEL CREATING
-
-# get feature and target
-x_feature = data_df["TITLE"]
-y_target = data_df["CATEGORY"]
-# split data
-x_sentence_train, x_sentence_test, y_train, y_test = train_test_split(x_feature, y_target, test_size=0.33, random_state=1000)
-print(x_sentence_train)
-print("\n")
-print(x_sentence_test)
-print("\n")
-print(y_train)
-print("\n")
-print(y_test)
-
-
-## convert our text into numerical representation
-## using Term-Frequency -Inverse-Document-Frequency
-
-vectorizer = TfidfVectorizer(norm=None, smooth_idf=False)
-mySentences_train_vector = vectorizer.fit_transform(x_sentence_train)
-
-
-NB = MultinomialNB(alpha=0.5)
-NB.fit(mySentences_train_vector,y_train)
